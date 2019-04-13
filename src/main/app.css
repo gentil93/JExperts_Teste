@@ -69,3 +69,21 @@ button {
 		transform: rotate(360deg);
 	}
 }
+
+.headerItem {
+	color: #f9faff !important;
+	cursor: pointer;
+}
+
+.HeaderLogout {
+	margin-right: 5px;
+}
+
+.registerForm {
+	margin-top: 15px;
+}
+
+.registerButton {
+	margin-top: auto;
+	padding: 0 15px;
+}
