@@ -1,11 +1,12 @@
 html {
-	background-color: #56baed;
+	background-color: #f9faff;
 }
 
 body {
-	font-family: 'Poppins', sans-serif;
-	height: 100vh;
-	background: #f9faff;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+		Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+	height: 100%;
+	background-color: #f9faff;
 }
 
 a {
@@ -35,7 +36,7 @@ h2 {
 	flex-direction: column;
 	justify-content: center;
 	width: 100%;
-	min-height: 100%;
+	min-height: 100;
 }
 
 .loginForm {
@@ -75,7 +76,7 @@ button {
 	cursor: pointer;
 }
 
-.HeaderLogout {
+.iconLeft {
 	margin-right: 5px;
 }
 
@@ -86,4 +87,40 @@ button {
 .registerButton {
 	margin-top: auto;
 	padding: 0 15px;
+}
+
+.fa-phone:before {
+	color: #324353;
+}
+
+.fa-at:before {
+	color: #324353;
+}
+
+.fa-user:before {
+	color: #324353;
+}
+.fa-trash-alt:before {
+	color: #cc0000;
+	cursor: pointer;
+}
+
+.fa-edit:before {
+	color: #007bff;
+	cursor: pointer;
+}
+
+.card-title {
+	font-size: x-large;
+}
+
+.card {
+	margin: 5px 0;
+}
+
+.actions {
+	right: 0;
+	position: absolute;
+	top: 0;
+	padding: 10px;
 }

@@ -19,9 +19,7 @@ export default () => {
 				<Nav className='ml-auto' navbar>
 					<NavItem>
 						<NavLink href='/' onClick={() => console.log('ha')}>
-							<span className='headerItem HeaderLogout'>
-								Sair
-							</span>
+							<span className='headerItem iconLeft'>Sair</span>
 							<i className='headerItem fas fa-sign-out-alt' />
 						</NavLink>
 					</NavItem>
