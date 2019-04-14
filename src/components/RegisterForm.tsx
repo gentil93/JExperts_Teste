@@ -53,13 +53,14 @@ export default (props: OwnProps) => {
 		}
 		return touched
 	}
-	const handleSave = async () => {
+	const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
 		if (!error && checkTouched()) {
 			props.handleSave(user as User)
 		}
 	}
 	return (
-		<Form className='registerForm'>
+		<Form className='registerForm' onSubmit={handleSave}>
 			<Row>
 				<Col className='formInput' xs='12' lg='4'>
 					<FormGroup>
@@ -137,7 +138,7 @@ export default (props: OwnProps) => {
 				</Col>
 			</Row>
 			<FormGroup>
-				<Button disabled={error} color='primary' onClick={handleSave}>
+				<Button disabled={error} color='primary' type='submit'>
 					Adicionar
 				</Button>
 			</FormGroup>
@@ -146,7 +147,5 @@ export default (props: OwnProps) => {
 }
 
 interface OwnProps {
-	handleSave: (
-		user: User
-	) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
+	handleSave: (user: User) => void
 }

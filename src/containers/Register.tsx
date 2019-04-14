@@ -5,11 +5,14 @@ import { RootReducerInterface } from '../interfaces/reducerInterfaces'
 import { Container, Col, Row } from 'reactstrap'
 
 import { User } from '../interfaces/commonInterfaces'
+import { addUser } from '../redux/actionCreators/usersActions'
 import Card from '../components/UserCard'
 import Navbar from '../components/Navbar'
 import RegisterForm from '../components/RegisterForm'
+import { generateJWT, setPassword } from '../utils/security'
 
 class Register extends React.Component<Props, State> {
+	state = { formKey: 1 }
 	editUser = (user: User) => {
 		return () => {}
 	}
@@ -18,14 +21,23 @@ class Register extends React.Component<Props, State> {
 	}
 	addUser = (user: User) => {}
 	handleUser = (user: User) => {
-		console.log('user')
-		return () => {
-			console.log(user)
-		}
+		const { addUser } = this.props
+		const hashedUser = this.hashUser(user)
+		addUser(hashedUser)
+		this.incrementFormKey()
+	}
+	hashUser = (user: User) => {
+		user.password = setPassword(user.password)
+		user.token = generateJWT(user.login, user.password)
+		return user
+	}
+	incrementFormKey = () => {
+		this.setState({
+			formKey: this.state.formKey + 1
+		})
 	}
 	renderCards = () => {
 		const { users } = this.props
-		console.log(users)
 		return users.map((user, index) => {
 			return (
 				<Col
@@ -53,7 +65,10 @@ class Register extends React.Component<Props, State> {
 			<React.Fragment>
 				<Navbar />
 				<Container>
-					<RegisterForm handleSave={this.handleUser} />
+					<RegisterForm
+						key={this.state.formKey}
+						handleSave={this.handleUser}
+					/>
 					<Row>{this.renderCards()}</Row>
 				</Container>
 			</React.Fragment>
@@ -61,7 +76,13 @@ class Register extends React.Component<Props, State> {
 	}
 }
 
-const mapDispatchToProps = (dispatch: any) => bindActionCreators({}, dispatch)
+const mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			addUser
+		},
+		dispatch
+	)
 const mapStateToProps = (state: RootReducerInterface) => ({
 	users: state.UsersReducer.users
 })
@@ -79,7 +100,9 @@ interface StateProps {
 	users: RootReducerInterface['UsersReducer']['users']
 }
 
-interface DispatchProps {}
+interface DispatchProps {
+	addUser: any
+}
 
 type Props = StateProps & DispatchProps & OwnProps
 type State = OwnState
