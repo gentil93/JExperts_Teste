@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { User } from '../interfaces/commonInterfaces'
 
 import {
 	Col,
@@ -10,14 +11,53 @@ import {
 	Row,
 	FormFeedback
 } from 'reactstrap'
-import { useInput } from '../utils/hooks'
+import {
+	useInput,
+	useEmailInput,
+	usePhoneInput,
+	UseInputInterface
+} from '../utils/hooks'
 
-export default () => {
+const useEffect = React.useEffect
+const useState = React.useState
+
+export default (props: OwnProps) => {
 	const name = useInput('', true)
-	const tel = useInput('')
-	const email = useInput('')
+	const tel = usePhoneInput('')
+	const email = useEmailInput('', true)
 	const login = useInput('', true)
 	const password = useInput('', true)
+	const [error, setError] = useState(false)
+	const user = {
+		name: name.value,
+		tel: tel.value,
+		email: email.value,
+		login: login.value,
+		password: password.value
+	}
+	useEffect(() => {
+		const errors = [name.error, email.error, login.error, password.error]
+		setError(
+			errors.some((error: string) => {
+				return Boolean(error)
+			})
+		)
+	}, [name.error, email.error, login.error, password.error])
+	const checkTouched = () => {
+		const fields = [name, email, login, password]
+		const touched = fields.every(field => {
+			return field.touched
+		})
+		for (const field of fields) {
+			;(field as UseInputInterface).setTouched(true)
+		}
+		return touched
+	}
+	const handleSave = async () => {
+		if (!error && checkTouched()) {
+			props.handleSave(user as User)
+		}
+	}
 	return (
 		<Form className='registerForm'>
 			<Row>
@@ -40,6 +80,8 @@ export default () => {
 					<FormGroup>
 						<Label for='tel'>Telefone</Label>
 						<Input
+							value={tel.value}
+							onChange={tel.onChange}
 							type='tel'
 							name='tel'
 							id='tel'
@@ -51,11 +93,16 @@ export default () => {
 					<FormGroup>
 						<Label for='email'>Email</Label>
 						<Input
+							value={email.value}
+							onChange={email.onChange}
+							onBlur={email.onBlur}
+							invalid={Boolean(email.error)}
 							type='email'
 							name='email'
 							id='email'
 							placeholder='test@example.com'
 						/>
+						<FormFeedback>{email.error}</FormFeedback>
 					</FormGroup>
 				</Col>
 				<Col className='formInput' xs='12' lg='4'>
@@ -88,14 +135,18 @@ export default () => {
 						<FormFeedback>{password.error}</FormFeedback>
 					</FormGroup>
 				</Col>
-				<Col className='registerButton' xs='12' lg='4'>
-					<FormGroup>
-						<Button color='primary' block>
-							Adicionar
-						</Button>
-					</FormGroup>
-				</Col>
 			</Row>
+			<FormGroup>
+				<Button disabled={error} color='primary' onClick={handleSave}>
+					Adicionar
+				</Button>
+			</FormGroup>
 		</Form>
 	)
+}
+
+interface OwnProps {
+	handleSave: (
+		user: User
+	) => (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void
 }

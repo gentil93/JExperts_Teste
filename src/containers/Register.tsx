@@ -16,6 +16,13 @@ class Register extends React.Component<Props, State> {
 	deleteUser = (user: User) => {
 		return () => {}
 	}
+	addUser = (user: User) => {}
+	handleUser = (user: User) => {
+		console.log('user')
+		return () => {
+			console.log(user)
+		}
+	}
 	renderCards = () => {
 		const { users } = this.props
 		console.log(users)
@@ -46,7 +53,7 @@ class Register extends React.Component<Props, State> {
 			<React.Fragment>
 				<Navbar />
 				<Container>
-					<RegisterForm />
+					<RegisterForm handleSave={this.handleUser} />
 					<Row>{this.renderCards()}</Row>
 				</Container>
 			</React.Fragment>
