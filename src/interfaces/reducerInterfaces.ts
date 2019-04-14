@@ -1,7 +1,7 @@
 import { User } from './commonInterfaces'
 
 export interface RootReducerInterface {
-	users: UsersReducer
+	UsersReducer: UsersReducer
 }
 
 export interface UsersReducer {
