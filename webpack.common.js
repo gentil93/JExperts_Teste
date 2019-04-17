@@ -90,7 +90,7 @@ module.exports = env = {
 			template: './public/index.html'
 		}),
 		new SWPrecacheWebpackPlugin({
-			cacheId: 'Version 1.0.0',
+			cacheId: 'Version 1.0.1',
 			dontCacheBustUrlsMatching: /\.\w{8}\./,
 			filename: 'service-worker.js',
 			minify: true,
