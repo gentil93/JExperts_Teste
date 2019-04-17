@@ -6,12 +6,15 @@ export interface RootReducerInterface {
 
 export interface UsersReducer {
 	users: JWTUser[]
+	admin: JWTUser
+	loggedUser: string
+	error: string
 }
 
 export interface Action {
 	type: string
 }
 
-interface JWTUser extends User {
+export interface JWTUser extends User {
 	token?: string
 }

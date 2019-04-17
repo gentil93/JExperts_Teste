@@ -23,7 +23,7 @@ class Register extends React.Component<Props, State> {
 	handleUser = (user: User) => {
 		const { addUser } = this.props
 		const hashedUser = this.hashUser(user)
-		addUser(hashedUser)
+		addUser(user)
 		this.incrementFormKey()
 	}
 	hashUser = (user: User) => {

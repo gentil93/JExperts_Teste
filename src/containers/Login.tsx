@@ -1,46 +1,45 @@
 import * as React from 'react'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
 
-import {
-	Container,
-	Col,
-	Form,
-	FormGroup,
-	Label,
-	Input,
-	Button
-} from 'reactstrap'
+import LoginForm from '../components/loginForm'
+import { loggedIn } from '../redux/actionCreators/usersActions'
+import { RootReducerInterface } from '../interfaces/reducerInterfaces'
+import { UserLogin } from '../interfaces/commonInterfaces'
+import { setPassword } from '../utils/security'
 
-class Login extends React.Component<any, any> {
+class Login extends React.Component<Props, State> {
+	handleLogin = (user: UserLogin) => {
+		const { login, password } = user
+		this.props.loggedIn(user)
+	}
 	render() {
-		return (
-			<Container className='App'>
-				<h2>JExperts CRUD</h2>
-				<Form className='loginForm'>
-					<FormGroup>
-						<Label>Email</Label>
-						<Input
-							type='email'
-							name='email'
-							id='exampleEmail'
-							placeholder='myemail@email.com'
-						/>
-					</FormGroup>
-					<FormGroup>
-						<Label for='examplePassword'>Password</Label>
-						<Input
-							type='password'
-							name='password'
-							id='examplePassword'
-							placeholder='********'
-						/>
-					</FormGroup>
-					<Button color='primary' block>
-						Login
-					</Button>
-				</Form>
-			</Container>
-		)
+		return <LoginForm handleLogin={this.handleLogin} />
 	}
 }
 
-export default Login
+const mapDispatchToProps = (dispatch: any) =>
+	bindActionCreators(
+		{
+			loggedIn
+		},
+		dispatch
+	)
+const mapStateToProps = (state: RootReducerInterface) => ({})
+
+export default connect<StateProps, DispatchProps, OwnProps>(
+	mapStateToProps,
+	mapDispatchToProps
+)(Login)
+
+interface OwnState {}
+
+interface OwnProps {}
+interface StateProps {}
+
+interface DispatchProps {
+	loggedIn: any
+}
+
+type Props = StateProps & DispatchProps & OwnProps
+type State = OwnState

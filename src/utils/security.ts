@@ -6,7 +6,7 @@ const JWT_ENCRYPTION = 'JExperts'
 const JWT_EXPIRATION = '24h'
 
 export const setPassword = (password: string) => {
-	const salt = bcrypt.genSaltSync(SALT_ROUNDS)
+	const salt = SALT_ROUNDS
 	const hash = bcrypt.hashSync(password, salt)
 	return hash
 }

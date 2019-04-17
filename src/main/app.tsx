@@ -16,7 +16,7 @@ class App extends React.Component<Props, State> {
 		}
 	}
 	render() {
-		return <MainRouter />
+		return <MainRouter token={this.props.token} />
 	}
 }
 
@@ -28,7 +28,8 @@ const mapDispatchToProps = (dispatch: any) =>
 		dispatch
 	)
 const mapStateToProps = (state: RootReducerInterface) => ({
-	users: state.UsersReducer.users
+	users: state.UsersReducer.users,
+	token: state.UsersReducer.loggedUser
 })
 
 export default connect<StateProps, DispatchProps, OwnProps>(
@@ -42,6 +43,7 @@ interface OwnProps {}
 
 interface StateProps {
 	users: RootReducerInterface['UsersReducer']['users']
+	token: RootReducerInterface['UsersReducer']['loggedUser']
 }
 
 interface DispatchProps {
