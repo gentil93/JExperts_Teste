@@ -24,7 +24,7 @@ const updateLocalStorage = (user: User, stateUsers: User[]) => {
 	localStorage.setItem('users', JSON.stringify(newStorageUsers))
 }
 
-export const updateUser = (users: User[]) => {
+export const updateUsers = (users: User[]) => {
 	return (dispatch: Dispatch<any>, getState: any) => {
 		dispatch({
 			type: 'UPDATE_USERS',
@@ -49,10 +49,7 @@ export const loggedIn = (user: UserLogin) => {
 					getState().UsersReducer.users
 				)
 				localStorage.setItem('users', JSON.stringify(newList))
-				dispatch({
-					type: 'UPDATE_USERS',
-					payload: newList
-				})
+				updateUsers(newList)
 			}
 			history.push('/register')
 			dispatch({
@@ -109,4 +106,14 @@ const isUser = (user: UserLogin, registeredUsers: JWTUser[]) => {
 		}
 	}
 	return false
+}
+
+export const editUser = (user: UserLogin, index: number) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
+		const users = getState().UsersReducer.users
+		users[index] = user
+		const newList = [...users]
+		localStorage.setItem('users', JSON.stringify(newList))
+		updateUsers(newList)
+	}
 }

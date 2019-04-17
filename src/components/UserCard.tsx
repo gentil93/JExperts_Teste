@@ -29,8 +29,8 @@ export default (props: OwnProps) => {
 }
 
 interface OwnProps {
-	onEdit: () => void
-	onDelete: () => void
+	onEdit?: any
+	onDelete?: () => void
 	name: string
 	tel: string
 	email: string

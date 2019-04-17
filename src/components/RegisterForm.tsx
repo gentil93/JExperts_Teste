@@ -17,16 +17,23 @@ import {
 	usePhoneInput,
 	UseInputInterface
 } from '../utils/hooks'
+import { JWTUser } from '@src/interfaces/reducerInterfaces'
 
 const useEffect = React.useEffect
 const useState = React.useState
 
 export default (props: OwnProps) => {
-	const name = useInput('', true)
-	const tel = usePhoneInput('')
-	const email = useEmailInput('', true)
-	const login = useInput('', true)
-	const password = useInput('', true)
+	const name = useInput((props.user && props.user.name) || '', true)
+	const tel = usePhoneInput((props.user && props.user.tel) || '')
+	const email = useEmailInput((props.user && props.user.email) || '', true)
+	const login = useInput(
+		(props.user && props.user.login) || '',
+		props.user === undefined
+	)
+	const password = useInput(
+		(props.user && props.user.password) || '',
+		props.user === undefined
+	)
 	const [error, setError] = useState(false)
 	const user = {
 		name: name.value,
@@ -46,17 +53,27 @@ export default (props: OwnProps) => {
 	const checkTouched = () => {
 		const fields = [name, email, login, password]
 		const touched = fields.every(field => {
-			return field.touched
+			if (field.touched) {
+				return field.touched
+			} else {
+				return true
+			}
 		})
 		for (const field of fields) {
-			;(field as UseInputInterface).setTouched(true)
+			if (field.setTouched) {
+				;(field as UseInputInterface).setTouched(true)
+			}
 		}
 		return touched
 	}
 	const handleSave = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		if (!error && checkTouched()) {
-			props.handleSave(user as User)
+			if (!props.user) {
+				props.handleSave(user as User)
+			} else {
+				props.handleEdit(user as User)
+			}
 		}
 	}
 	return (
@@ -105,41 +122,45 @@ export default (props: OwnProps) => {
 						/>
 						<FormFeedback>{email.error}</FormFeedback>
 					</FormGroup>
-				</Col>
-				<Col className='formInput' xs='12' lg='4'>
-					<FormGroup>
-						<Label for='login'>Login</Label>
-						<Input
-							value={login.value}
-							onChange={login.onChange}
-							onBlur={login.onBlur}
-							invalid={Boolean(login.error)}
-							type='text'
-							id='login'
-							placeholder='example99'
-						/>
-						<FormFeedback>{login.error}</FormFeedback>
-					</FormGroup>
-				</Col>
-				<Col className='formInput' xs='12' lg='4'>
-					<FormGroup>
-						<Label for='password'>Senha</Label>
-						<Input
-							value={password.value}
-							onChange={password.onChange}
-							onBlur={password.onBlur}
-							invalid={Boolean(password.error)}
-							type='password'
-							id='password'
-							placeholder='**********'
-						/>
-						<FormFeedback>{password.error}</FormFeedback>
-					</FormGroup>
-				</Col>
+				</Col>{' '}
+				{!props.user && (
+					<Col className='formInput' xs='12' lg='4'>
+						<FormGroup>
+							<Label for='login'>Login</Label>
+							<Input
+								value={login.value}
+								onChange={login.onChange}
+								onBlur={login.onBlur}
+								invalid={Boolean(login.error)}
+								type='text'
+								id='login'
+								placeholder='example99'
+							/>
+							<FormFeedback>{login.error}</FormFeedback>
+						</FormGroup>
+					</Col>
+				)}{' '}
+				{!props.user && (
+					<Col className='formInput' xs='12' lg='4'>
+						<FormGroup>
+							<Label for='password'>Senha</Label>
+							<Input
+								value={password.value}
+								onChange={password.onChange}
+								onBlur={password.onBlur}
+								invalid={Boolean(password.error)}
+								type='password'
+								id='password'
+								placeholder='**********'
+							/>
+							<FormFeedback>{password.error}</FormFeedback>
+						</FormGroup>
+					</Col>
+				)}
 			</Row>
 			<FormGroup>
 				<Button disabled={error} color='primary' type='submit'>
-					Adicionar
+					{props.user ? 'salvar' : 'Adicionar'}
 				</Button>
 			</FormGroup>
 		</Form>
@@ -148,4 +169,6 @@ export default (props: OwnProps) => {
 
 interface OwnProps {
 	handleSave: (user: User) => void
+	handleEdit: (user: User) => void
+	user: JWTUser
 }

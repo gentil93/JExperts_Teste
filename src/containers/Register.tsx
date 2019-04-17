@@ -1,31 +1,50 @@
 import * as React from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { RootReducerInterface } from '../interfaces/reducerInterfaces'
+import { RootReducerInterface, JWTUser } from '../interfaces/reducerInterfaces'
 import { Container, Col, Row } from 'reactstrap'
 
 import { User } from '../interfaces/commonInterfaces'
-import { addUser } from '../redux/actionCreators/usersActions'
+import { addUser, editUser } from '../redux/actionCreators/usersActions'
 import Card from '../components/UserCard'
 import Navbar from '../components/Navbar'
 import RegisterForm from '../components/RegisterForm'
 import { generateJWT, setPassword } from '../utils/security'
 
 class Register extends React.Component<Props, State> {
-	state = { formKey: 1 }
-	editUser = (user: User) => {
-		return () => {}
+	constructor(props: Props) {
+		super(props)
+		this.state = { formKey: 1, user: null, userIndex: null }
+	}
+	editUserClicked = (user: User, index: number) => {
+		return () => {
+			this.setState({
+				user,
+				userIndex: index,
+				formKey: this.state.formKey + 1
+			})
+		}
+	}
+	editUser = (editedUser: JWTUser) => {
+		const { editUser } = this.props
+		const { userIndex } = this.state
+		editUser(editedUser, userIndex)
+		this.setState({
+			formKey: this.state.formKey + 1,
+			user: null,
+			userIndex: null
+		})
 	}
 	deleteUser = (user: User) => {
 		return () => {}
 	}
-	addUser = (user: User) => {}
-	handleUser = (user: User) => {
+	addUser = (user: User) => {
 		const { addUser } = this.props
 		const hashedUser = this.hashUser(user)
-		addUser(user)
+		addUser(hashedUser)
 		this.incrementFormKey()
 	}
+	handleUser = (user: User) => {}
 	hashUser = (user: User) => {
 		user.password = setPassword(user.password)
 		user.token = generateJWT(user.login, user.password)
@@ -33,7 +52,8 @@ class Register extends React.Component<Props, State> {
 	}
 	incrementFormKey = () => {
 		this.setState({
-			formKey: this.state.formKey + 1
+			formKey: this.state.formKey + 1,
+			...this.state
 		})
 	}
 	renderCards = () => {
@@ -54,7 +74,7 @@ class Register extends React.Component<Props, State> {
 						name={user.name}
 						tel={user.tel}
 						onDelete={this.deleteUser(user)}
-						onEdit={this.editUser(user)}
+						onEdit={this.editUserClicked(user, index)}
 					/>
 				</Col>
 			)
@@ -67,7 +87,9 @@ class Register extends React.Component<Props, State> {
 				<Container>
 					<RegisterForm
 						key={this.state.formKey}
-						handleSave={this.handleUser}
+						handleSave={this.addUser}
+						user={this.state.user}
+						handleEdit={this.editUser}
 					/>
 					<Row>{this.renderCards()}</Row>
 				</Container>
@@ -79,12 +101,14 @@ class Register extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: any) =>
 	bindActionCreators(
 		{
+			editUser,
 			addUser
 		},
 		dispatch
 	)
 const mapStateToProps = (state: RootReducerInterface) => ({
-	users: state.UsersReducer.users
+	users: state.UsersReducer.users,
+	token: state.UsersReducer.loggedUser
 })
 
 export default connect<StateProps, DispatchProps, OwnProps>(
@@ -92,7 +116,11 @@ export default connect<StateProps, DispatchProps, OwnProps>(
 	mapDispatchToProps
 )(Register)
 
-interface OwnState {}
+interface OwnState {
+	user: JWTUser
+	formKey: number
+	userIndex: number
+}
 
 interface OwnProps {}
 
@@ -102,6 +130,7 @@ interface StateProps {
 
 interface DispatchProps {
 	addUser: any
+	editUser: any
 }
 
 type Props = StateProps & DispatchProps & OwnProps

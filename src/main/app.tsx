@@ -4,15 +4,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { RootReducerInterface } from '../interfaces/reducerInterfaces'
 
-import { updateUser } from '../redux/actionCreators/usersActions'
+import { updateUsers } from '../redux/actionCreators/usersActions'
 import MainRouter from '../components/mainRouter'
 
 class App extends React.Component<Props, State> {
 	componentDidMount() {
-		const { updateUser } = this.props
+		const { updateUsers } = this.props
 		const savedUsers = JSON.parse(localStorage.getItem('users'))
 		if (savedUsers) {
-			updateUser(savedUsers)
+			updateUsers(savedUsers)
 		}
 	}
 	render() {
@@ -23,7 +23,7 @@ class App extends React.Component<Props, State> {
 const mapDispatchToProps = (dispatch: any) =>
 	bindActionCreators(
 		{
-			updateUser
+			updateUsers
 		},
 		dispatch
 	)
@@ -47,7 +47,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-	updateUser: any
+	updateUsers: any
 }
 
 type Props = StateProps & DispatchProps & OwnProps
