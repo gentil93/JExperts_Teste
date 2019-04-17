@@ -117,3 +117,20 @@ export const editUser = (user: UserLogin, index: number) => {
 		updateUsers(newList)
 	}
 }
+
+export const deleteUser = (user: User, index: number) => {
+	return (dispatch: Dispatch<any>, getState: any) => {
+		const users = getState().UsersReducer.users
+		users.splice(index, 1)
+		const newList = [...users]
+		localStorage.setItem('users', JSON.stringify(newList))
+		updateUsers(newList)
+		if (user.token === getState().UsersReducer.loggedUser) {
+			dispatch({
+				type: 'USER_LOGIN',
+				payload: null
+			})
+			history.push('/')
+		}
+	}
+}

@@ -18,7 +18,7 @@ export default () => {
 			<Collapse isOpen={open} navbar>
 				<Nav className='ml-auto' navbar>
 					<NavItem>
-						<NavLink href='/' onClick={() => console.log('ha')}>
+						<NavLink href='/'>
 							<span className='headerItem iconLeft'>Sair</span>
 							<i className='headerItem fas fa-sign-out-alt' />
 						</NavLink>

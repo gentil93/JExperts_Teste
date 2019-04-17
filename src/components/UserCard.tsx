@@ -30,7 +30,7 @@ export default (props: OwnProps) => {
 
 interface OwnProps {
 	onEdit?: any
-	onDelete?: () => void
+	onDelete?: any
 	name: string
 	tel: string
 	email: string
